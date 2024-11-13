@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            {% for category in categories %}
+            {% if category.slug %}
+                {{category.name}}
+            {%endif%}
+
+            {% endfor %}     
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        {% for cat in categories %}
+        {% if cat.slug %}
+            <li><a href="{% url 'shop:product_list_by_category' cat.slug %}">{{ cat.name }}</a></li>
+        {% endif %}
+        {% endfor %}
+    </header>
+    <main>
+        {% block content %}    
+        {% endblock %}
+    </main>
+</body>
+</html>

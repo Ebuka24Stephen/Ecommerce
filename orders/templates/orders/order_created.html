@@ -1,0 +1,23 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Order Confirmation
+{% endblock %}
+
+{% block content %}
+    <h1>Order Confirmation</h1>
+    <p>Thank you, {{ order.full_name }}! Your order has been successfully placed.</p>
+    <p>Order Details:</p>
+
+    <ul>
+        {% for item in order.items.all %}
+            <li>
+                {{ item.product.name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }} - Total: ${{ item.get_cost }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>Total Cost: ${{ order.get_total_cost }}</p>
+    <p>We will send a confirmation email to: {{ order.email }}</p>
+    <p><a href="{% url 'shop:product_list' %}">Back to Products</a></p>
+{% endblock %}

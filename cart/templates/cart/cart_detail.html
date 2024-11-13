@@ -1,0 +1,77 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block content %}
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+        }
+    </style>
+
+
+
+    {% if cart %}
+        <h2>Your Cart</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Update Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.items.all %}
+                    <tr>
+                        <td><a href="{{item.product.get_absolute_url}}">{% if item.product.image %}<img width="200px" src="{{ item.product.image.url }}" alt="{{ product.name }}">{% else %}<p>No image available</p>{% endif %}</a>
+                        </td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.product.price }}</td>
+                        <td>${{ item.get_total_price }}</td>
+                        <td>
+                            <form action="{% url 'cart_add' item.product.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Add to cart</button>
+                            </form>  
+                        </td>
+                        <td>
+                            <form action="{% url 'cart_remove' item.product.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Total Price:</td>
+                    <td colspan="3">${{ cart.get_total_price }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+
+    {% if cart and cart.items.exists %}
+        <form action="{% url 'order_create' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Checkout</button>
+        </form>
+    {% endif %}
+
+    <p><a href="{% url 'shop:product_list' %}">Back to Products</a></p>
+{% endblock %}
